@@ -11,7 +11,8 @@ connectDB();
 const app= express();
 
 
-app.use(express.json());
+app.use(express.json()); // <-- This parses JSON body
+
 app.use(morgan('dev'));
 
 app.use("/api/v1/auth",authRoutes)
