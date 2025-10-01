@@ -6,6 +6,8 @@ export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
+
+
     // Validation
     if (!name) return res.status(400).send({ success: false, message: "Name is required" });
     if (!email) return res.status(400).send({ success: false, message: "Email is required" });

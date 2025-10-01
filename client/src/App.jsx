@@ -5,12 +5,15 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PageNotFound from "./pages/PageNotFound";
 import Policy from "./pages/Policy";
+import Register from "./pages/Register";
 
 
 function App() {
   return (
     <>
     <Routes>
+            <Route path="/register" element={<Register/>}></Route>
+
             <Route path="/" element={<Home/>}></Route>
             <Route path="/about" element={<About/>}></Route>
             <Route path="/contact" element={<Contact/>}></Route>
