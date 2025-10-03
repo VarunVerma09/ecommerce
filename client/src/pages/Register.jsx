@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import axios from "axios";
+import {Link} from 'react-router-dom'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -19,15 +20,9 @@ const Register = () => {
     e.preventDefault();
     console.log("Form Submitted:", formData);
 
-    try {
-      const res = await axios.post(`${process.env.REGISTER_URL}/api/v1/auth/register`, formData);
-      alert("User Created Successfully ✅");
-      console.log(res.data);
-    } catch (error) {
-      console.error("Error registering user:", error);
-      alert("Something went wrong ❌");
-    }
-  };
+  const res = await axios.post("http://localhost:8080/api/v1/auth/register ", formData);
+  }
+
 
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
@@ -118,7 +113,7 @@ const Register = () => {
 
         {/* Login Link */}
         <p className="text-center mt-3">
-          Already have an account? <a href="#">Login</a>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>
