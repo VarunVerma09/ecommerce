@@ -2,8 +2,12 @@ import { useState } from "react";
 import React from "react";
 import axios from "axios";
 import {Link} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/auth";
 
 const Login = () => {
+ const { auth, setAuth } = useAuth();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
 
     email: "",
@@ -16,9 +20,18 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const res = await axios.post("http://localhost:8080/api/v1/auth/login", formData);
     console.log("User Loged In:", formData);
+    if(res && res.data.success){
+      setAuth({
+        ...auth,
+        user:res.data.user,
+        token:res.data.token,
+      })
+      localStorage.setItem("auth",JSON.stringify(res.data))
+      navigate("/");
+    }
 
-  const res = await axios.post("http://localhost:8080/api/v1/auth/login", formData);
   }
 
 

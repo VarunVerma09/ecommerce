@@ -1,7 +1,17 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-
+import { useAuth } from "../../context/auth";
 const Header = () => {
+  const {auth , setAuth} = useAuth();
+  const logouthandle = () =>{
+    setAuth({
+      ...auth,
+      user:null,
+      token:""
+    })
+localStorage.removeItem("token")
+
+  }
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light px-4 text-uppercase shadow-sm">
@@ -37,7 +47,9 @@ const Header = () => {
                   Category
                 </NavLink>
               </li>
-              <li className="nav-item">
+            {
+              !auth.user ? (<>
+                <li className="nav-item">
                 <NavLink className="nav-link" to="/register">
                   Registration
                 </NavLink>
@@ -46,7 +58,10 @@ const Header = () => {
                 <NavLink className="nav-link" to="/login">
                   Login
                 </NavLink>
-              </li>
+              </li></>):(<>  <NavLink className="nav-link" onClick={logouthandle} to="/login">
+                  Logout
+                </NavLink></>)
+            }
               <li className="nav-item">
                 <NavLink className="nav-link" to="/cart">
                   Cart(0)
