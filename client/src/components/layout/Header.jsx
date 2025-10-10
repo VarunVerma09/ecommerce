@@ -8,8 +8,8 @@ const Header = () => {
       ...auth,
       user:null,
       token:""
-    })
-localStorage.removeItem("token")
+    });
+    localStorage.removeItem("auth");
 
   }
   return (

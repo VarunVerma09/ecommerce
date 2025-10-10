@@ -2,12 +2,13 @@ import { useState } from "react";
 import React from "react";
 import axios from "axios";
 import {Link} from 'react-router-dom'
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useAuth } from "../context/auth";
 
 const Login = () => {
  const { auth, setAuth } = useAuth();
   const navigate = useNavigate()
+  const location = useLocation();
   const [formData, setFormData] = useState({
 
     email: "",
@@ -29,7 +30,7 @@ const Login = () => {
         token:res.data.token,
       })
       localStorage.setItem("auth",JSON.stringify(res.data))
-      navigate("/");
+      navigate(location.state || "/");
     }
 
   }

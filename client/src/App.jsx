@@ -7,6 +7,8 @@ import PageNotFound from "./pages/PageNotFound";
 import Policy from "./pages/Policy";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Dashboard from "./pages/user/Dashboard";
+import Private from "./components/layout/routes/Private";
 
 
 
@@ -16,11 +18,10 @@ function App() {
     <Routes>
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
-
-           
-
+            <Route path="/dashboard" element={<Private/>}>
+            <Route path="" element={<Dashboard/>}></Route>            
+            </Route>         
             <Route path="/" element={<Home/>}></Route>
-
             <Route path="/about" element={<About/>}></Route>
             <Route path="/contact" element={<Contact/>}></Route>
             <Route path="/policy" element={<Policy/>}></Route>
