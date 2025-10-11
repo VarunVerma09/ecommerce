@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/user/Dashboard";
 import Private from "./components/layout/routes/Private";
+import ForgotPass from "./pages/ForgotPass";
 
 
 
@@ -18,6 +19,8 @@ function App() {
     <Routes>
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
+            <Route path="/forgot-password" element={<ForgotPass/>}></Route>
+
             <Route path="/dashboard" element={<Private/>}>
             <Route path="" element={<Dashboard/>}></Route>            
             </Route>         

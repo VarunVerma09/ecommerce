@@ -11,6 +11,7 @@ const Register = () => {
     phone: "",
     address: "",
     password: "",
+    answer:"",
   });
 
   const handleChange = (e) => {
@@ -88,6 +89,21 @@ const Register = () => {
               name="address"
               placeholder="Enter your Address"
               value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          {/* Answer */}
+          <div className="mb-3">
+            <label htmlFor="address" className="form-label">Answer</label>
+            <input
+              type="text"
+              className="form-control"
+              id="answer"
+              name="answer"
+              placeholder="What is Your Father Name"
+              value={formData.answer}
               onChange={handleChange}
               required
             />
