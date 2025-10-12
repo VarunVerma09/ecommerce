@@ -77,7 +77,7 @@ const Header = () => {
                       aria-labelledby="navbarDropdownMenuLink"
                     >
                       <li>
-                        <Link className="dropdown-item" to="/dashboard">
+                        <Link className="dropdown-item" to={`/dashboard/${auth?.user?.role ===1 ? "admin":"user"}`}>
                           Dashboard
                         </Link>
                       </li>

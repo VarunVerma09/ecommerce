@@ -10,6 +10,13 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/user/Dashboard";
 import Private from "./components/layout/routes/Private";
 import ForgotPass from "./pages/ForgotPass";
+import AdminDash from "./pages/admin/AdminDash";
+import AdminRoute from "./components/layout/routes/AdminRoute";
+import CreateCetegory from "./pages/admin/CreateCetegory";
+import CreateProduct from "./pages/admin/CreateProduct";
+import UserDetails from "./pages/admin/UserDetails";
+import Orders from "./pages/admin/Orders";
+import Profile from "./pages/user/Profile";
 
 
 
@@ -20,10 +27,18 @@ function App() {
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/forgot-password" element={<ForgotPass/>}></Route>
-
             <Route path="/dashboard" element={<Private/>}>
-            <Route path="" element={<Dashboard/>}></Route>            
-            </Route>         
+            <Route path="user" element={<Dashboard/>}></Route> 
+            <Route path="user/orders" element={<Orders/>}></Route> 
+            <Route path="user/profile" element={<Profile/>}></Route> 
+            </Route>
+              <Route path="/dashboard" element={<AdminRoute/>}>
+            <Route path="admin" element={<AdminDash/>}></Route>  
+            <Route path="admin/category" element={<CreateCetegory/>}></Route>            
+            <Route path="admin/products" element={<CreateProduct/>}></Route>   
+            <Route path="admin/users" element={<UserDetails/>}></Route>    
+            <Route path="admin/orders" element={<Orders/>}></Route>            
+            </Route>          
             <Route path="/" element={<Home/>}></Route>
             <Route path="/about" element={<About/>}></Route>
             <Route path="/contact" element={<Contact/>}></Route>

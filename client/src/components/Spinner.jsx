@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { useLocation } from 'react-router'
 
 
-function Spinner() {
+function Spinner({path = "login"}) {
     const [count, setCount] = useState(5);
     const navigate = useNavigate();
     const location = useLocation();
@@ -12,9 +12,9 @@ useEffect (()=>{
     const interval = setInterval(()=>{
         setCount((prevcount)=> --prevcount);
     },1000);
-    count === 0 && navigate("/login",{state:location.pathname});
+    count === 0 && navigate(`/${path}`,{state:location.pathname});
     return ()=>clearInterval(interval);
-},[count,navigate])
+},[count,navigate,path])
 
   return (
    <div className="d-flex flex-column justify-content-center align-items-center vh-100">
