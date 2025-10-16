@@ -42,28 +42,32 @@ export const createCategoryController = async(req,res) => {
 }
 
 //update category 
-export const updateCategoryController = async(req,res) => {
-    try {
-        const {name} = req.body;
-        const {id} = req.body;
-        const category = await categoryModel.findByIdAndUpdate(id,{name,slug:slugify(name)},{new:true});
-        res.status(201).send({
-            success:true,
-            message:"Category Updated",
-            category,
-        })
+export const updateCategoryController = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const categoryId = req.params.id;
 
-        
-    } catch (error) {
-         console.log(error);
-        
-        res.status(500).send({
-            success:false,
-            massage:"Error in Category",
-            error
-        });
-    }
-}
+    if (!name) return res.status(400).send({ success: false, message: "Name is required" });
+
+    const updatedCategory = await categoryModel.findByIdAndUpdate(
+      categoryId,
+      { name },
+      { new: true } // Important: returns the updated document
+    );
+
+    if (!updatedCategory)
+      return res.status(404).send({ success: false, message: "Category not found" });
+
+    res.status(200).send({
+      success: true,
+      message: "Category updated successfully",
+      category: updatedCategory,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "Error updating category", error });
+  }
+};
 //all category controller
 export const CategoryController = async (req, res) => {
   try {
@@ -109,26 +113,18 @@ try {
 
 
 //delete category controller
-export const deleteCategoryController = async(req,res) => {
-try {
-    
-   const {id} =req.params
-    await categoryModel.findByIdAndDelete(id);
-    res.status(201).send({
-            success:true,
-            message:"Category Deleted Successfully",
-            category,
-        });
+export const deleteCategoryController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCategory = await Category.findByIdAndDelete(id);
 
-} catch (error) {
-      console.log(error);        
-        res.status(500).send({
-            success:false,
-            massage:"Error while deleting Category",
-            error
-        });
-    
-}
-    
-}
+    if (!deletedCategory)
+      return res.status(404).send({ success: false, message: "Category not found" });
+
+    res.status(200).send({ success: true, message: "Category deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "Error deleting category", error });
+  }
+};
 

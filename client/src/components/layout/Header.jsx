@@ -42,7 +42,7 @@ const Header = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/category">
+                <NavLink className="nav-link" to="/dashboard/user">
                   Category
                 </NavLink>
               </li>

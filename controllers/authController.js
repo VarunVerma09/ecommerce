@@ -20,7 +20,7 @@ export const registerController = async (req, res) => {
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(200).send({
-        success: false, // ✅ Fix: mark as false
+        success: false, 
         message: "Already registered. Please login.",
       });
     }

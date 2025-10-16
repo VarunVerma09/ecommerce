@@ -17,6 +17,8 @@ import CreateProduct from "./pages/admin/CreateProduct";
 import UserDetails from "./pages/admin/UserDetails";
 import Orders from "./pages/admin/Orders";
 import Profile from "./pages/user/Profile";
+import 'antd/dist/reset.css'; 
+
 
 
 
