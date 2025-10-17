@@ -9,18 +9,17 @@ import {
   getSingleProductController,
   updateProductController
 } from "../controllers/productController.js";
-import ExpressFormidable from "express-formidable";
+import formidable from "express-formidable";
 const router = express.Router();
 
 //routes
 router.post(
   "/create-product",
   requireSignIn,
-  ExpressFormidable(),
   isAdmin,
+  formidable(), 
   createProductController
 );
-
 //get all products
 
 router.get("/get-product", getProductController);
@@ -38,7 +37,7 @@ router.delete("/delete-product/:pid", deleteProductController);
 router.put(
   "/update-product",
   requireSignIn,
-  ExpressFormidable(),
+  formidable(),
   isAdmin,
   updateProductController
 );

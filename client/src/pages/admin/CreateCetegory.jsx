@@ -4,8 +4,10 @@ import Layout from "../../components/layout/Layout";
 import axios from "axios";
 import CategroyFrom from "../../components/form/CategroyFrom";
 import Modal from "../../components/form/Modal";
+import { useAuth } from "../../context/auth";
 
 function CreateCategory() {
+  const {auth,setAuth} = useAuth()
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
@@ -69,8 +71,20 @@ function CreateCategory() {
   // Delete category
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/category/delete-category/${id}`);
-      setCategories((prev) => prev.filter((cat) => cat._id !== id));
+      
+      
+     await axios.delete(
+      `http://localhost:8080/api/v1/category/delete-category/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.token}`,
+        },
+      }
+    );
+      setCategories((...prev) => prev.filter((cat) => {cat._id !== id; console.log(cat);}
+      ));
+      getAllCategories();
+      
     } catch (error) {
       console.error(error);
       alert("Error deleting category!");

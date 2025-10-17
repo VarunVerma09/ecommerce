@@ -1,3 +1,4 @@
+import { json } from "express";
 import { comparePassword, hashPassword } from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
 import JWT from 'jsonwebtoken'
@@ -75,6 +76,7 @@ export const loginController = async (req, res) => {
       });
     }
 
+    
     // check password
     const match = await comparePassword(password, user.password);
     if (!match) {
@@ -185,3 +187,27 @@ export const forgotPasswordController = async (req, res) => {
     });
   }
 };
+
+//get all users 
+export const allUserController = async (req, res) => {
+
+  try {
+    const allUser = await userModel.find();    
+  
+     res.send({
+      success: true,
+      message: "Get all users successfully",
+      allUser
+    
+      
+    });
+    
+  } catch (error) {
+     console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in getting all users",
+      error,
+    });
+  }
+}

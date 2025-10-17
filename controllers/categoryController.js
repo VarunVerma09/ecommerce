@@ -116,15 +116,18 @@ try {
 export const deleteCategoryController = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedCategory = await Category.findByIdAndDelete(id);
-
-    if (!deletedCategory)
-      return res.status(404).send({ success: false, message: "Category not found" });
-
-    res.status(200).send({ success: true, message: "Category deleted successfully" });
+    await categoryModel.findByIdAndDelete(id);
+    res.status(200).send({
+      success: true,
+      message: "Categry Deleted Successfully",
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ success: false, message: "Error deleting category", error });
+    res.status(500).send({
+      success: false,
+      message: "error while deleting category",
+      error,
+    });
   }
 };
 

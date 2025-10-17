@@ -1,5 +1,5 @@
 import express from "express";
-import { registerController,loginController,isAdmin,testController,forgotPasswordController } from '../controllers/authController.js'
+import { registerController,loginController,isAdmin,testController,forgotPasswordController,allUserController } from '../controllers/authController.js'
 import { requireSignIn } from "../middleware/authMidd.js";
 
 const router = express.Router()
@@ -23,7 +23,8 @@ router.get("/admin-auth", requireSignIn,isAdmin,(req,res)=>{
 //forgot password
 router.post("/forgot-password",forgotPasswordController);
 
-
+//all users
+router.get("/all-users",requireSignIn,isAdmin,allUserController)
 
 
 export default router;
