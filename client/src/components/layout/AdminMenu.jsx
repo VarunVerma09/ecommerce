@@ -13,7 +13,10 @@ function AdminMenu() {
           <i className="bi bi-people me-2"></i> Users
         </NavLink>
         <NavLink to="/dashboard/admin/products" className="nav-link text-light" activeclassname="active">
-          <i className="bi bi-box-seam me-2"></i> Product Details
+          <i className="bi bi-box-seam me-2"></i> Create Product 
+        </NavLink>
+         <NavLink to="/dashboard/admin/product" className="nav-link text-light" activeclassname="active">
+          <i className="bi bi-box-seam me-2"></i> Show Product 
         </NavLink>
         <NavLink to="/dashboard/admin/orders" className="nav-link text-light" activeclassname="active">
           <i className="bi bi-basket me-2"></i> Orders

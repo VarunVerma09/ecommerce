@@ -76,13 +76,13 @@ function CreateProduct() {
     <Layout title={"Dashboard - Create Product"}>
       <div className="container-fluid m-3 p-3 dashboard">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-2">
             <AdminMenu />
           </div>
 
-          <div className="col-md-9">
-            <h1>Create Product</h1>
-            <div className="m-1 w-75">
+          <div className="col-md-10 ">
+            <h1 className="">Create Product</h1>
+            <div className="m-1 w-75  ">
 
               {/* ✅ Upload Photo */}
               <div className="mb-3">

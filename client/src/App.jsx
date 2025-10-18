@@ -18,6 +18,7 @@ import UserDetails from "./pages/admin/UserDetails";
 import Orders from "./pages/admin/Orders";
 import Profile from "./pages/user/Profile";
 import 'antd/dist/reset.css'; 
+import ProductPage from "./pages/admin/ProductPage";
 
 
 
@@ -37,7 +38,8 @@ function App() {
               <Route path="/dashboard" element={<AdminRoute/>}>
             <Route path="admin" element={<AdminDash/>}></Route>  
             <Route path="admin/category" element={<CreateCetegory/>}></Route>            
-            <Route path="admin/products" element={<CreateProduct/>}></Route>   
+            <Route path="admin/products" element={<CreateProduct/>}></Route>
+            <Route path="admin/product" element={<ProductPage/>}></Route>
             <Route path="admin/users" element={<UserDetails/>}></Route>    
             <Route path="admin/orders" element={<Orders/>}></Route>            
             </Route>          
