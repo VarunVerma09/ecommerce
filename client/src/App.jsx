@@ -19,6 +19,7 @@ import Orders from "./pages/admin/Orders";
 import Profile from "./pages/user/Profile";
 import 'antd/dist/reset.css'; 
 import ProductPage from "./pages/admin/ProductPage";
+import UpdateProduct from "./pages/admin/UpdateProduct";
 
 
 
@@ -39,6 +40,8 @@ function App() {
             <Route path="admin" element={<AdminDash/>}></Route>  
             <Route path="admin/category" element={<CreateCetegory/>}></Route>            
             <Route path="admin/products" element={<CreateProduct/>}></Route>
+            <Route path="admin/product/:slug" element={<UpdateProduct/>}></Route>
+
             <Route path="admin/product" element={<ProductPage/>}></Route>
             <Route path="admin/users" element={<UserDetails/>}></Route>    
             <Route path="admin/orders" element={<Orders/>}></Route>            

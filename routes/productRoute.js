@@ -25,7 +25,7 @@ router.post(
 router.get("/get-product", getProductController);
 
 //get single product
-router.get("/single-product/:slug", getSingleProductController);
+router.get("/get-product/:slug", getSingleProductController);
 
 //get photo
 router.get("/product-photo/:pid", productPhotoController);
@@ -35,10 +35,10 @@ router.delete("/delete-product/:pid", deleteProductController);
 
 //update products
 router.put(
-  "/update-product",
+  "/update-product/:pid",
   requireSignIn,
-  formidable(),
   isAdmin,
+  formidable(),
   updateProductController
 );
 

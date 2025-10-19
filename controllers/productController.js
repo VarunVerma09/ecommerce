@@ -78,33 +78,39 @@ export const getProductController = async (req, res) => {
 };
 
 //getting single product 
-export const getSingleProductController = async (req,res)=>{
+export const getSingleProductController = async (req, res) => {
   try {
-    
-    const product = productModel.findOne({slug:req.params.slug})
-    .select("-photo")
-    .populate("category")
-        res.status(201).send({
+    const product = await productModel
+      .findOne({ slug: req.params.slug })
+      .select("-photo")
+      .populate("category");
+
+    if (!product) {
+      return res.status(404).send({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).send({
       success: true,
-      message: " Get Single Product Successfully",
-      products,
+      message: "Single product fetched successfully",
+      product, // ✅ not "products"
     });
   } catch (error) {
-      console.log(error);
+    console.log(error);
     res.status(500).send({
       success: false,
-      massage: "Error in getting Single Product",
+      message: "Error in getting single product",
       error,
     });
   }
-}
+};
 
 //photo controller 
 export const productPhotoController = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.pid).select("photo");
-
-    // If product or photo not found
     if (!product || !product.photo || !product.photo.data) {
       return res.status(404).send({
         success: false,
@@ -146,47 +152,47 @@ try {
 }
 }
 
-//update product 
+//update product
 export const updateProductController = async (req, res) => {
   try {
-    const { name, slug, description, price, category, quantity, shipping } =
-      res.fields;
+    const { name, description, price, category, quantity, shipping } = req.fields;
     const { photo } = req.files;
-    //validation
+
+    // Validation
     switch (true) {
       case !name:
-        return res.status(500).send({ error: "Name is Required" });
+        return res.status(400).send({ error: "Name is required" });
       case !description:
-        return res.status(500).send({ error: "description is Required" });
+        return res.status(400).send({ error: "Description is required" });
       case !price:
-        return res.status(500).send({ error: "price is Required" });
+        return res.status(400).send({ error: "Price is required" });
       case !category:
-        return res.status(500).send({ error: "category is Required" });
+        return res.status(400).send({ error: "Category is required" });
       case !quantity:
-        return res.status(500).send({ error: "quantity is Required" });
-      case !photo:
-        return res
-          .status(500)
-          .send({ error: "photo  is Required and should be less then 10 mb" });
+        return res.status(400).send({ error: "Quantity is required" });
     }
-    const products = await productModel.findByIdAndUpdate(req.params.pid,{...req.fields, slug:slugify(name)},{new:true })
+
+    // Update product
+    const product = await productModel.findByIdAndUpdate(
+      req.params.pid,
+      { ...req.fields, slug: slugify(name) },
+      { new: true }
+    );
+
+    // Update photo if uploaded
     if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
+      product.photo.data = fs.readFileSync(photo.path);
+      product.photo.contentType = photo.type;
+      await product.save();
     }
-    await products.save();
-    res.status(201).send({
+
+    res.status(200).send({
       success: true,
-      message: "Product updated Successfully",
-      products,
+      message: "Product updated successfully",
+      product,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      massage: "Error while updating Product",
-      error,
-    });
+    console.error(error);
+    res.status(500).send({ success: false, message: "Error updating product", error });
   }
 };
-
