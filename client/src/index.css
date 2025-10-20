@@ -3,18 +3,17 @@
   border-bottom: 2px solid black;
   transition: all 0.3s ease-in-out; /* smoother and faster */
 }
-.Link{
-    text-decoration: none;
-    color: white;
-    padding: 15px;
+.Link {
+  text-decoration: none;
+  color: white;
+  padding: 15px;
 }
-.Link:hover{
-    border-bottom: 1px solid gray;
-    color: gray;
+.Link:hover {
+  border-bottom: 1px solid gray;
+  color: gray;
 }
-.center-fixed{
- 
-  position: fixed;   /* stays in viewport even on scroll */
+.center-fixed {
+  position: fixed; /* stays in viewport even on scroll */
   top: 50%;
   left: 50%;
   padding: 5px;
@@ -30,7 +29,7 @@
   align-items: center;
   justify-content: center;
 }
-.cls{
+.cls {
   position: absolute;
   top: 0;
   right: 0;
@@ -38,11 +37,19 @@
   border: none;
   font-size: 20px;
 }
-.upd{
+.upd {
   margin-top: 30px;
   margin-left: 300px;
 }
-.mycard{
+.mycard {
   text-decoration: none;
   color: black;
+}
+.over {
+  
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+}
+::-webkit-scrollbar {
+  visibility: hidden;
 }
