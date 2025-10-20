@@ -53,3 +53,9 @@
 ::-webkit-scrollbar {
   visibility: hidden;
 }
+.bg1{
+  background-color: #6c63ff;
+}
+.bg{
+  background-color: #0094aa;
+}

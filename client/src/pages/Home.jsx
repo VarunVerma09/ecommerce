@@ -3,11 +3,13 @@ import Layout from "../components/layout/Layout";
 import { useAuth } from "../context/auth";
 import axios from "axios";
 import Crousel from "../components/Crousel";
+import { price } from "../data/data";
 
 function Home() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [checked,setChecked] = useState([])
+  const [checked,setChecked] = useState([]);
+  const [radio,setRadio] = useState([])
   const { auth } = useAuth();
 
   // Get all products
@@ -55,7 +57,7 @@ all = all.filter((c)=> c !== id)
   return (
     <Layout>
       {/* ===== Category Filters ===== */}
-      <div className="container mt-4 g-0 ">
+      <div className="container-fluid pt-3 g-0  ">
         <div className="row justify-content-center text-center   over">
           {categories?.map((item, ind) => (
             <div key={ind} className="col-6 col-sm-4 col-md-2">
@@ -80,11 +82,40 @@ all = all.filter((c)=> c !== id)
         </div>
       </div>
       <Crousel />
+        {/* ===== price Filters ===== */}
+       
+  <div className="container mt-4 g-0">
+    <h5 className="text-center mb-3 font-underline">Filter By Price</h5>
+  <div className="row justify-content-center text-center over">
+    {price?.map((item, ind) => (
+      <div key={item.id} className="col-6 col-sm-4 col-md-2">
+        <div className="form-check d-flex justify-content-center align-items-center">
+          <input
+            type="radio"
+            className="form-check-input me-2"
+            id={`category-${ind}`}
+            value={item.name}
+            name="price"
+            checked={radio === item.name}
+            onChange={(e) => setRadio(e.target.value)}
+          />
+          <label
+            className="form-check-label text-uppercase fw-semibold"
+            htmlFor={`category-${ind}`}
+          >
+            {item.name}
+          </label>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
 
       {/* ===== Product Cards ===== */}
-      <div className="container py-5">
+      <div className="container-fluid py-5">
         
-        <h1>Mens Collections</h1>
+        <h1 className="me-5">Best Collections</h1>
         <div className="row g-4 justify-content-center">
           {products?.map((item) => (
             <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">

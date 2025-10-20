@@ -196,3 +196,8 @@ export const updateProductController = async (req, res) => {
     res.status(500).send({ success: false, message: "Error updating product", error });
   }
 };
+//filer product
+export const filterProductController = async (req,res)=>{
+  
+}
+
