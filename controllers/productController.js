@@ -198,6 +198,10 @@ export const updateProductController = async (req, res) => {
 };
 //filer product
 export const filterProductController = async (req,res)=>{
-  
+  try {
+    
+  } catch (error) {
+    
+  }
 }
 

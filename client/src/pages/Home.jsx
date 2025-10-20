@@ -81,11 +81,13 @@ all = all.filter((c)=> c !== id)
         
         </div>
       </div>
+
       <Crousel />
+      
         {/* ===== price Filters ===== */}
        
   <div className="container mt-4 g-0">
-    <h5 className="text-center mb-3 font-underline">Filter By Price</h5>
+    <h5 className="text-center mb-3 text-uppercase text-underline">Filter By Price</h5>
   <div className="row justify-content-center text-center over">
     {price?.map((item, ind) => (
       <div key={item.id} className="col-6 col-sm-4 col-md-2">
@@ -110,17 +112,17 @@ all = all.filter((c)=> c !== id)
     ))}
   </div>
 </div>
-
+<hr />
 
       {/* ===== Product Cards ===== */}
       <div className="container-fluid py-5">
         
-        <h1 className="me-5">Best Collections</h1>
+        <h1 className="me-5">Our Collections</h1>
         <div className="row g-4 justify-content-center">
           {products?.map((item) => (
             <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div
-                className="card border-0 shadow-lg overflow-hidden h-100"
+                className="card border-0 shadow-lg overflow-hidden w-auto h-600"
                 style={{
                   borderRadius: "20px",
                   background:
@@ -145,8 +147,8 @@ all = all.filter((c)=> c !== id)
                     className="img-fluid"
                     style={{
                       width: "100%",
-                      height: "auto",
-                      objectFit: "contain",
+                      height: "25vw",
+                      objectFit: "cover",
                       borderTopLeftRadius: "20px",
                       borderTopRightRadius: "20px",
                     }}
