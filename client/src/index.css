@@ -59,3 +59,99 @@
 .bg{
   background-color: #0094aa;
 }
+/* responsive */
+@media (max-width: 768px) {
+  /* Reduce product card image height */
+  .card img {
+    height: 50vw !important;
+  }
+
+  /* Make product title smaller */
+  .card-title {
+    font-size: 1rem !important;
+  }
+
+  /* Reduce card padding and radius slightly */
+  .card {
+    border-radius: 12px !important;
+  }
+
+  /* Add more space between filters */
+  .form-check {
+    margin-bottom: 8px !important;
+  }
+
+  /* Category + price filter text smaller */
+  .form-check-label {
+    font-size: 0.85rem !important;
+  }
+
+  /* Stack filter options vertically */
+  .over {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Button smaller for mobile */
+  .btn {
+    font-size: 0.85rem !important;
+    padding: 6px 12px !important;
+  }
+
+  /* Product section title smaller */
+  h1 {
+    font-size: 1.5rem !important;
+    text-align: center !important;
+  }
+
+  /* Add spacing below carousel */
+  .carousel {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+/* ===== Custom Radio Styling ===== */
+
+/* Hide the default radio button appearance */
+.form-check-input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #6c63ff;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.form-check-input[type="radio"]:hover {
+  border-color: #4b42d6;
+  box-shadow: 0 0 6px rgba(108, 99, 255, 0.3);
+}
+
+/* When checked — fill with gradient color */
+.form-check-input[type="radio"]:checked {
+  background: linear-gradient(135deg, #6c63ff, #9a8cff);
+  border-color: #6c63ff;
+  box-shadow: 0 0 6px rgba(108, 99, 255, 0.5);
+}
+
+/* Inner dot (for checked state) */
+.form-check-input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* Adjust label styling when selected */
+.form-check-input[type="radio"]:checked + .form-check-label {
+  color: #6c63ff;
+  font-weight: 600;
+}

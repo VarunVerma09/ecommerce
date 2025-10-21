@@ -4,27 +4,31 @@ import { useAuth } from "../context/auth";
 import axios from "axios";
 import Crousel from "../components/Crousel";
 import { price } from "../data/data";
+import { AiOutlineReload } from "react-icons/ai";
 
 function Home() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [checked,setChecked] = useState([]);
-  const [radio,setRadio] = useState([])
+  const [checked, setChecked] = useState([]);
+  const [radio, setRadio] = useState("");
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const { auth } = useAuth();
 
-  // Get all products
-  const getAllProducts = async () => {
+  // ===== Get total product count =====
+  const getTotal = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/product/get-product"
+        "http://localhost:8080/api/v1/product/product-count"
       );
-      if (data?.success) setProducts(data.products);
+      setTotal(data?.total);
     } catch (error) {
-      console.log("Error fetching products:", error);
+      console.log(error);
     }
   };
 
-  // Get all categories
+  // ===== Get all categories =====
   const getAllCategories = async () => {
     try {
       const { data } = await axios.get(
@@ -36,29 +40,78 @@ function Home() {
     }
   };
 
+  // ===== Get products with pagination =====
+  const getProducts = async (pageNum = 1, reset = false) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(
+        `http://localhost:8080/api/v1/product/product-list/${pageNum}`
+      );
+      setLoading(false);
+
+      // If reset = true → replace, else append
+      if (reset) {
+        setProducts(data?.products);
+      } else {
+        setProducts((prev) => [...prev, ...data?.products]);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching products:", error);
+    }
+  };
+
+  // ===== Handle Category Filter =====
+  const handleFilter = (value, id) => {
+    let all = [...checked];
+    if (value) all.push(id);
+    else all = all.filter((c) => c !== id);
+    setChecked(all);
+  };
+
+  // ===== Filtered Products =====
+  const filterProduct = async () => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8080/api/v1/product/product-filters",
+        { checked, radio }
+      );
+      setProducts(data?.products);
+    } catch (error) {
+      console.log("Error filtering products:", error);
+    }
+  };
+
+  // ===== Initial Data Load =====
   useEffect(() => {
-    getAllProducts();
     getAllCategories();
+    getTotal();
+    getProducts(); // Load first page initially
   }, []);
-  
-//filter by category
-const handleFilter = (value,id) => {
-  let all = [...checked]
-  if(value){
-    all.push(id);
-  }else{
-all = all.filter((c)=> c !== id)
-  }
-  setChecked(all);
 
-}
+  // ===== Pagination Effect =====
+  useEffect(() => {
+    if (page === 1) return; // already loaded first page
+    getProducts(page);
+  }, [page]);
 
+  // ===== Filters Effect =====
+  useEffect(() => {
+    if (checked.length === 0 && !radio) {
+      // reset filter → reload first page
+      setPage(1);
+      getProducts(1, true);
+    } else {
+      // apply filters
+      filterProduct();
+    }
+  }, [checked, radio]);
 
   return (
     <Layout>
       {/* ===== Category Filters ===== */}
-      <div className="container-fluid pt-3 g-0  ">
-        <div className="row justify-content-center text-center   over">
+      <div className="container-fluid pt-3 g-0">
+        <div className="row justify-content-center text-center over">
           {categories?.map((item, ind) => (
             <div key={ind} className="col-6 col-sm-4 col-md-2">
               <div className="form-check d-flex justify-content-center align-items-center">
@@ -66,8 +119,7 @@ all = all.filter((c)=> c !== id)
                   type="checkbox"
                   className="form-check-input me-2"
                   id={`category-${ind}`}
-                  onChange={(e)=>handleFilter(e.target.checked,item._id)}
-                  name={item.name}
+                  onChange={(e) => handleFilter(e.target.checked, item._id)}
                 />
                 <label
                   className="form-check-label text-uppercase fw-semibold"
@@ -78,141 +130,137 @@ all = all.filter((c)=> c !== id)
               </div>
             </div>
           ))}
-        
         </div>
       </div>
 
       <Crousel />
-      
-        {/* ===== price Filters ===== */}
-       
-  <div className="container mt-4 g-0">
-    <h5 className="text-center mb-3 text-uppercase text-underline">Filter By Price</h5>
-  <div className="row justify-content-center text-center over">
-    {price?.map((item, ind) => (
-      <div key={item.id} className="col-6 col-sm-4 col-md-2">
-        <div className="form-check d-flex justify-content-center align-items-center">
-          <input
-            type="radio"
-            className="form-check-input me-2"
-            id={`category-${ind}`}
-            value={item.name}
-            name="price"
-            checked={radio === item.name}
-            onChange={(e) => setRadio(e.target.value)}
-          />
-          <label
-            className="form-check-label text-uppercase fw-semibold"
-            htmlFor={`category-${ind}`}
-          >
-            {item.name}
-          </label>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<hr />
 
-      {/* ===== Product Cards ===== */}
-      <div className="container-fluid py-5">
-        
-        <h1 className="me-5">Our Collections</h1>
-        <div className="row g-4 justify-content-center">
-          {products?.map((item) => (
-            <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-              <div
-                className="card border-0 shadow-lg overflow-hidden w-auto h-600"
-                style={{
-                  borderRadius: "20px",
-                  background:
-                    "linear-gradient(180deg, #dcd4ff 0%, #ffffff 100%)",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                }}
-              >
-                {/* Product Image */}
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, rgba(100,70,255,0.2) 0%, rgba(180,140,255,0.2) 100%)",
-                    borderTopLeftRadius: "20px",
-                    borderTopRightRadius: "20px",
-                    padding: "0",
-                  }}
+      {/* ===== Price Filters ===== */}
+      <div className="container mt-4 g-0">
+        <h5 className="text-center mb-3 text-uppercase text-underline">
+          Filter By Price
+        </h5>
+        <div className="row justify-content-center text-center over">
+          {price?.map((item, ind) => (
+            <div key={item.id} className="col-6 col-sm-4 col-md-2">
+              <div className="form-check d-flex justify-content-center align-items-center">
+                <input
+                  type="radio"
+                  className="form-check-input me-2"
+                  id={`price-${ind}`}
+                  name="price"
+                  value={item.name}
+                  checked={radio === item.name}
+                  onChange={(e) => setRadio(e.target.value)}
+                />
+                <label
+                  className="form-check-label text-uppercase fw-semibold"
+                  htmlFor={`price-${ind}`}
                 >
-                  <img
-                    src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
-                    alt={item.name}
-                    className="img-fluid"
-                    style={{
-                      width: "100%",
-                      height: "25vw",
-                      objectFit: "cover",
-                      borderTopLeftRadius: "20px",
-                      borderTopRightRadius: "20px",
-                    }}
-                  />
-                </div>
-
-                {/* Card Body */}
-                <div
-                  className="card-body bg-white d-flex flex-column justify-content-between"
-                  style={{
-                    borderBottom: "6px solid white",
-                    borderBottomLeftRadius: "20px",
-                    borderBottomRightRadius: "20px",
-                  }}
-                >
-                  <div>
-                    <h5 className="card-title fw-bold text-dark">
-                      {item.name.length > 25
-                        ? `${item.name.substring(0, 25)}...`
-                        : item.name}
-                    </h5>
-
-                    <p className="card-text text-muted small mb-3">
-                      {item.description.length > 80
-                        ? `${item.description.substring(0, 80)}...`
-                        : item.description}
-                    </p>
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center mt-auto">
-                    <div>
-                      <p className="mb-0 text-muted small">PRICE</p>
-                      <h5 className="fw-bold mb-0 text-dark">
-                        ${item.price.toFixed(2)}
-                      </h5>
-                    </div>
-
-                    <button
-                      className="btn px-4 py-2 fw-semibold text-white"
-                      style={{
-                        backgroundColor: "#6c63ff",
-                        borderRadius: "10px",
-                        transition: "background-color 0.3s ease",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.target.style.backgroundColor = "#574bff")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.backgroundColor = "#6c63ff")
-                      }
-                    >
-                      Add to cart
-                    </button>
-                  </div>
-                </div>
+                  {item.name}
+                </label>
               </div>
             </div>
           ))}
+        </div>
+      </div>
 
-          {/* If no products */}
-          {products.length === 0 && (
+      <hr />
+
+      {/* ===== Product Cards ===== */}
+      <div className="container-fluid py-5">
+        <h1 className="me-5">Our Collections</h1>
+        <div className="row g-4 justify-content-center">
+          {products?.length > 0 ? (
+            products.map((item) => (
+              <div
+                key={item._id}
+                className="col-12 col-sm-6 col-md-4 col-lg-3"
+              >
+                <div
+                  className="card border-0 shadow-lg overflow-hidden w-auto h-600"
+                  style={{
+                    borderRadius: "20px",
+                    background:
+                      "linear-gradient(180deg, #dcd4ff 0%, #ffffff 100%)",
+                  }}
+                >
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(100,70,255,0.2) 0%, rgba(180,140,255,0.2) 100%)",
+                      borderTopLeftRadius: "20px",
+                      borderTopRightRadius: "20px",
+                    }}
+                  >
+                    <img
+                      src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
+                      alt={item.name}
+                      className="img-fluid"
+                      style={{
+                        width: "100%",
+                        height: "25vw",
+                        objectFit: "cover",
+                        borderTopLeftRadius: "20px",
+                        borderTopRightRadius: "20px",
+                      }}
+                    />
+                  </div>
+                  <div className="card-body bg-white d-flex flex-column justify-content-between">
+                    <div>
+                      <h5 className="card-title fw-bold text-dark">
+                        {item.name.length > 25
+                          ? `${item.name.substring(0, 25)}...`
+                          : item.name}
+                      </h5>
+                      <p className="card-text text-muted small mb-3">
+                        {item.description.length > 80
+                          ? `${item.description.substring(0, 80)}...`
+                          : item.description}
+                      </p>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                      <div>
+                        <p className="mb-0 text-muted small">PRICE</p>
+                        <h5 className="fw-bold mb-0 text-dark">
+                          ${item.price.toFixed(2)}
+                        </h5>
+                      </div>
+                      <button
+                        className="btn px-4 py-2 fw-semibold text-white"
+                        style={{
+                          backgroundColor: "#6c63ff",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        Add to cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
             <div className="text-center text-muted fs-5 mt-5">
               No products found
             </div>
+          )}
+        </div>
+
+        {/* ===== Load More Button ===== */}
+        <div className="m-2 p-3 text-center">
+          {products && products.length < total && (
+            <button
+              className="btn loadmore btn-primary px-4 py-2"
+              onClick={(e) => {
+                e.preventDefault();
+                setPage((prev) => prev + 1);
+              }}
+              disabled={loading}
+            >
+              {loading ? "Loading ..." : <>Load More <AiOutlineReload /></>}
+            </button>
           )}
         </div>
       </div>
