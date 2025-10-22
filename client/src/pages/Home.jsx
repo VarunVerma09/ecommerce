@@ -5,14 +5,14 @@ import axios from "axios";
 import Crousel from "../components/Crousel";
 import { price } from "../data/data";
 import { AiOutlineReload } from "react-icons/ai";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useCart } from "../context/cart";
 
 function Home() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [checked, setChecked] = useState([]);
-  const [radio, setRadio] = useState("");
+  const [radio, setRadio] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,6 @@ function Home() {
       );
       setLoading(false);
 
-      // If reset = true → replace, else append
       if (reset) {
         setProducts(data?.products);
       } else {
@@ -100,7 +99,7 @@ function Home() {
 
   // ===== Filters Effect =====
   useEffect(() => {
-    if (checked.length === 0 && !radio) {
+    if (checked.length === 0 && radio.length === 0) {
       setPage(1);
       getProducts(1, true);
     } else {
@@ -150,9 +149,7 @@ function Home() {
                   className="form-check-input me-2"
                   id={`price-${ind}`}
                   name="price"
-                  value={item.name}
-                  checked={radio === item.name}
-                  onChange={(e) => setRadio(e.target.value)}
+                  onChange={() => setRadio(item.array)}
                 />
                 <label
                   className="form-check-label text-uppercase fw-semibold"
@@ -179,7 +176,7 @@ function Home() {
                 className="col-12 col-sm-6 col-md-4 col-lg-3 "
               >
                 <div
-                  className="card border-0 shadow-lg  overflow-hidden w-100 h-600"
+                  className="card border-0 shadow-lg overflow-hidden w-100 h-600"
                   style={{
                     borderRadius: "20px",
                     background:
@@ -187,7 +184,7 @@ function Home() {
                   }}
                 >
                   <div
-                    className=" justify-content-center align-items-center"
+                    className="justify-content-center align-items-center"
                     style={{
                       background:
                         "linear-gradient(180deg, rgba(100,70,255,0.2) 0%, rgba(180,140,255,0.2) 100%)",
@@ -204,7 +201,6 @@ function Home() {
                           width: "100%",
                           height: "25vw",
                           objectFit: "cover",
-
                           borderTopLeftRadius: "20px",
                           borderTopRightRadius: "20px",
                         }}
@@ -235,7 +231,10 @@ function Home() {
                         onClick={() => {
                           const updatedCart = [...cart, item];
                           setCart(updatedCart);
-                         localStorage.setItem("cart", JSON.stringify(updatedCart));
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify(updatedCart)
+                          );
                         }}
                         className="btn px-4 py-2 fw-semibold text-white"
                         style={{
