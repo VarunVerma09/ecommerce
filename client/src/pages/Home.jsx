@@ -5,6 +5,7 @@ import axios from "axios";
 import Crousel from "../components/Crousel";
 import { price } from "../data/data";
 import { AiOutlineReload } from "react-icons/ai";
+import { Link } from "react-router";
 
 function Home() {
   const [categories, setCategories] = useState([]);
@@ -86,23 +87,21 @@ function Home() {
   useEffect(() => {
     getAllCategories();
     getTotal();
-    getProducts(); // Load first page initially
+    getProducts();
   }, []);
 
   // ===== Pagination Effect =====
   useEffect(() => {
-    if (page === 1) return; // already loaded first page
+    if (page === 1) return;
     getProducts(page);
   }, [page]);
 
   // ===== Filters Effect =====
   useEffect(() => {
     if (checked.length === 0 && !radio) {
-      // reset filter → reload first page
       setPage(1);
       getProducts(1, true);
     } else {
-      // apply filters
       filterProduct();
     }
   }, [checked, radio]);
@@ -173,39 +172,46 @@ function Home() {
         <div className="row g-4 justify-content-center">
           {products?.length > 0 ? (
             products.map((item) => (
+              
               <div
                 key={item._id}
-                className="col-12 col-sm-6 col-md-4 col-lg-3"
+                className="col-12 col-sm-6 col-md-4 col-lg-3 "
               >
                 <div
-                  className="card border-0 shadow-lg overflow-hidden w-auto h-600"
+                  className="card border-0 shadow-lg  overflow-hidden w-100 h-600"
                   style={{
                     borderRadius: "20px",
                     background:
                       "linear-gradient(180deg, #dcd4ff 0%, #ffffff 100%)",
                   }}
                 >
+                  
                   <div
-                    className="d-flex justify-content-center align-items-center"
+                    className=" justify-content-center align-items-center"
                     style={{
+                     
                       background:
                         "linear-gradient(180deg, rgba(100,70,255,0.2) 0%, rgba(180,140,255,0.2) 100%)",
                       borderTopLeftRadius: "20px",
                       borderTopRightRadius: "20px",
                     }}
                   >
+                    <Link to={`/product/${item.slug}`}>
                     <img
                       src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
                       alt={item.name}
-                      className="img-fluid"
+                      className="img-fluid p-0"
                       style={{
+                        
                         width: "100%",
                         height: "25vw",
                         objectFit: "cover",
+                        
                         borderTopLeftRadius: "20px",
                         borderTopRightRadius: "20px",
                       }}
                     />
+                    </Link>
                   </div>
                   <div className="card-body bg-white d-flex flex-column justify-content-between">
                     <div>

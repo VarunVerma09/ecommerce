@@ -20,6 +20,8 @@ import Profile from "./pages/user/Profile";
 import 'antd/dist/reset.css'; 
 import ProductPage from "./pages/admin/ProductPage";
 import UpdateProduct from "./pages/admin/UpdateProduct";
+import Search from "./pages/Search";
+import ProductDetails from "./pages/ProductDetails";
 
 
 
@@ -30,6 +32,8 @@ function App() {
     <Routes>
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
+             <Route path="/product/:slug" element={<ProductDetails />} />
+              <Route path="/search" element={<Search />} />
             <Route path="/forgot-password" element={<ForgotPass/>}></Route>
             <Route path="/dashboard" element={<Private/>}>
             <Route path="user" element={<Dashboard/>}></Route> 
