@@ -1,10 +1,15 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import SearchInput from "../SearchInput";
+import useCategory from "../../hook/useCategory";
+import { useCart } from "../../context/cart";
 
 const Header = () => {
   const { auth, setAuth } = useAuth() || {};
+  const [cart] = useCart();
+  const categories = useCategory();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setAuth({ ...auth, user: null, token: "" });
@@ -46,13 +51,30 @@ const Header = () => {
                 Home
               </NavLink>
             </li>
-
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/categories">
-                Category
-              </NavLink>
+          
+            <li className="nav-item dropdown">
+              <Link
+                className="nav-link dropdown-toggle"
+                to={"/categories"}
+                data-bs-toggle="dropdown"
+              >
+                Categories
+              </Link>
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" to={"/category/allcategory"}>
+                    All Categories
+                  </Link>
+                </li>
+                {categories?.map((c) => (
+                  <li key={c._id}>
+                    <Link className="dropdown-item" to={`/category/${c.slug}`}>
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </li>
-
             {!auth?.user ? (
               <>
                 <li className="nav-item">
@@ -85,7 +107,9 @@ const Header = () => {
                   <li>
                     <Link
                       className="dropdown-item"
-                      to={`/dashboard/${auth?.user?.role === 1 ? "admin" : "user"}`}
+                      to={`/dashboard/${
+                        auth?.user?.role === 1 ? "admin" : "user"
+                      }`}
                     >
                       Dashboard
                     </Link>
@@ -102,10 +126,9 @@ const Header = () => {
                 </ul>
               </li>
             )}
-
             <li className="nav-item">
               <NavLink className="nav-link" to="/cart">
-                Cart (0)
+                Cart {cart?.length}
               </NavLink>
             </li>
           </ul>

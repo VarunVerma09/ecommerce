@@ -22,6 +22,10 @@ import ProductPage from "./pages/admin/ProductPage";
 import UpdateProduct from "./pages/admin/UpdateProduct";
 import Search from "./pages/Search";
 import ProductDetails from "./pages/ProductDetails";
+import AllCategory from "./pages/AllCategory";
+import SingleCategory from "./pages/SingleCategory";
+import { CartProvider } from "./context/cart";
+import Cart from "./pages/Cart";
 
 
 
@@ -31,6 +35,13 @@ function App() {
     <>
     <Routes>
             <Route path="/register" element={<Register/>}></Route>
+            <Route path="/category/allcategory" element={<AllCategory/>}></Route>
+            <Route path="/cart" element={<Cart/>}></Route>
+
+            <Route path="/category/:slug" element={<SingleCategory/>}></Route>
+
+
+
             <Route path="/login" element={<Login/>}></Route>
              <Route path="/product/:slug" element={<ProductDetails />} />
               <Route path="/search" element={<Search />} />

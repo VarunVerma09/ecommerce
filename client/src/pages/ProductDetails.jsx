@@ -51,16 +51,16 @@ const ProductDetails = () => {
             />
           </div>
 
-          <div className="col-md-6">
-            <h1 className="mb-3">{product.name}</h1>
+          <div className="col-md-6 cus">
+            <h1 className="mb-3"> Name : {product.name}</h1>
             <h4 className="text-primary mb-3">
-              {product?.price?.toLocaleString("en-US", {
+              Price :  {product?.price?.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
               })}
             </h4>
-            <p><strong>Category:</strong> {product?.category?.name}</p>
-            <p>{product.description}</p>
+            <p> <strong>Category :</strong> {product?.category?.name}</p>
+            <p><strong>Description : </strong>{product.description}</p>
 
             <div className="d-flex flex-wrap gap-2 mt-3">
               <button className="btn btn-primary btn-lg">Add to Cart</button>
@@ -77,7 +77,7 @@ const ProductDetails = () => {
         <h3 className="mb-4">Similar Products</h3>
         {relatedProducts.length < 1 && <p>No Similar Products Found</p>}
 
-        <div className="row g-3">
+        <div className="row  g-3">
           {relatedProducts?.map((item) => (
             <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div
@@ -110,7 +110,7 @@ const ProductDetails = () => {
                     />
                   </Link>
                 </div>
-                <div className="card-body bg-white d-flex flex-column justify-content-between">
+                <div className="card-body bg-white d-flex flex-column ">
                   <div>
                     <h5 className="card-title fw-bold text-dark">
                       {item.name.length > 25 ? `${item.name.substring(0, 25)}...` : item.name}

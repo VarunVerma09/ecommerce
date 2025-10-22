@@ -6,6 +6,7 @@ import Crousel from "../components/Crousel";
 import { price } from "../data/data";
 import { AiOutlineReload } from "react-icons/ai";
 import { Link } from "react-router";
+import { useCart } from "../context/cart";
 
 function Home() {
   const [categories, setCategories] = useState([]);
@@ -16,6 +17,7 @@ function Home() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { auth } = useAuth();
+  const [cart, setCart] = useCart();
 
   // ===== Get total product count =====
   const getTotal = async () => {
@@ -172,7 +174,6 @@ function Home() {
         <div className="row g-4 justify-content-center">
           {products?.length > 0 ? (
             products.map((item) => (
-              
               <div
                 key={item._id}
                 className="col-12 col-sm-6 col-md-4 col-lg-3 "
@@ -185,11 +186,9 @@ function Home() {
                       "linear-gradient(180deg, #dcd4ff 0%, #ffffff 100%)",
                   }}
                 >
-                  
                   <div
                     className=" justify-content-center align-items-center"
                     style={{
-                     
                       background:
                         "linear-gradient(180deg, rgba(100,70,255,0.2) 0%, rgba(180,140,255,0.2) 100%)",
                       borderTopLeftRadius: "20px",
@@ -197,20 +196,19 @@ function Home() {
                     }}
                   >
                     <Link to={`/product/${item.slug}`}>
-                    <img
-                      src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
-                      alt={item.name}
-                      className="img-fluid p-0"
-                      style={{
-                        
-                        width: "100%",
-                        height: "25vw",
-                        objectFit: "cover",
-                        
-                        borderTopLeftRadius: "20px",
-                        borderTopRightRadius: "20px",
-                      }}
-                    />
+                      <img
+                        src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
+                        alt={item.name}
+                        className="img-fluid p-0"
+                        style={{
+                          width: "100%",
+                          height: "25vw",
+                          objectFit: "cover",
+
+                          borderTopLeftRadius: "20px",
+                          borderTopRightRadius: "20px",
+                        }}
+                      />
                     </Link>
                   </div>
                   <div className="card-body bg-white d-flex flex-column justify-content-between">
@@ -234,6 +232,11 @@ function Home() {
                         </h5>
                       </div>
                       <button
+                        onClick={() => {
+                          const updatedCart = [...cart, item];
+                          setCart(updatedCart);
+                         localStorage.setItem("cart", JSON.stringify(updatedCart));
+                        }}
                         className="btn px-4 py-2 fw-semibold text-white"
                         style={{
                           backgroundColor: "#6c63ff",
@@ -265,7 +268,13 @@ function Home() {
               }}
               disabled={loading}
             >
-              {loading ? "Loading ..." : <>Load More <AiOutlineReload /></>}
+              {loading ? (
+                "Loading ..."
+              ) : (
+                <>
+                  Load More <AiOutlineReload />
+                </>
+              )}
             </button>
           )}
         </div>
