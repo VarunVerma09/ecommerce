@@ -148,13 +148,20 @@ const Cart = () => {
                       options={{ authorization: clientToken, paypal: { flow: "vault" } }}
                       onInstance={(instance) => setInstance(instance)}
                     />
-                    <button
-                      className="btn btn-primary w-100 mt-3"
-                      onClick={handlePayment}
-                      disabled={loading}
-                    >
-                      {loading ? "Processing..." : "Make Payment"}
-                    </button>
+                   <button
+  className="btn btn-outline-warning w-100"
+  onClick={() => {
+    if (auth?.user?.role === 1) {
+      // Admin user
+      navigate("/dashboard/admin/profile");
+    } else {
+      // Regular user
+      navigate("/dashboard/user/profile");
+    }
+  }}
+>
+  Update Address
+</button>
                   </>
                 )}
               </div>
