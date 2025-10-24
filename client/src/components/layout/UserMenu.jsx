@@ -9,7 +9,7 @@ function UserMenu() {
         <NavLink to="/dashboard/user/profile" className="nav-link text-light" activeclassname="active ">
           <i className="bi bi-tags me-2"></i> Profile
         </NavLink>
-        <NavLink to="/dashboard/user/orders" className="nav-link text-light" activeclassname="active">
+        <NavLink to="/dashboard/user/orderss" className="nav-link text-light" activeclassname="active">
           <i className="bi bi-people me-2"></i> Orders
         </NavLink>
           <NavLink to="/logout" className="nav-link text-light" activeclassname="active">

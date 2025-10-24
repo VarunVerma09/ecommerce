@@ -16,37 +16,45 @@ import userModel from "../models/userModel.js";
 // };
 
 
+// Middleware to check if user is signed in
 export const requireSignIn = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      return res.status(401).send({
+      return res.status(401).json({
         success: false,
         message: "Authorization header missing",
       });
     }
 
-    // ✅ Remove "Bearer " prefix if present
+    // Remove "Bearer " prefix if present
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : authHeader;
 
-    // ✅ Verify the token with your secret
-    const decode = JWT.verify(token, process.env.JWT_SECRET);
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Token not found",
+      });
+    }
 
-    // ✅ Attach the decoded user info (e.g., { _id: ... }) to req.user
-    req.user = decode;
+    // Verify token
+    const decoded = JWT.verify(token, process.env.JWT_SECRET);
+
+    // Attach decoded user info to req.user
+    req.user = decoded;
     next();
   } catch (error) {
     console.error("JWT verification failed:", error.message);
-    res.status(401).send({
+    res.status(401).json({
       success: false,
       message: "Invalid or expired token",
+      error: error.message, // optional, useful for debugging
     });
   }
 };
-
 
 //admin acceess
 export const isAdmin = async (req, res, next) => {
@@ -55,7 +63,7 @@ export const isAdmin = async (req, res, next) => {
     if (user.role !== 1) {
       return res.status(401).send({
         success: false,
-        message: "UnAuthorized Access",
+        message: "Unauthorized Access",
       });
     } else {
       next();
@@ -65,7 +73,7 @@ export const isAdmin = async (req, res, next) => {
     res.status(401).send({
       success: false,
       error,
-      message: "Error in admin middelware",
+      message: "Error in admin middleware",
     });
   }
 };

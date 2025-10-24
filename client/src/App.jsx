@@ -14,8 +14,8 @@ import AdminDash from "./pages/admin/AdminDash";
 import AdminRoute from "./components/layout/routes/AdminRoute";
 import CreateCetegory from "./pages/admin/CreateCetegory";
 import CreateProduct from "./pages/admin/CreateProduct";
+import Orders from "./pages/user/Orders";
 import UserDetails from "./pages/admin/UserDetails";
-import Orders from "./pages/admin/Orders";
 import Profile from "./pages/user/Profile";
 import 'antd/dist/reset.css'; 
 import ProductPage from "./pages/admin/ProductPage";
@@ -26,6 +26,7 @@ import AllCategory from "./pages/AllCategory";
 import SingleCategory from "./pages/SingleCategory";
 import { CartProvider } from "./context/cart";
 import Cart from "./pages/Cart";
+import OrdersAdmin from "./pages/admin/OrdersAdmin";
 
 
 
@@ -48,7 +49,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPass/>}></Route>
             <Route path="/dashboard" element={<Private/>}>
             <Route path="user" element={<Dashboard/>}></Route> 
-            <Route path="user/orders" element={<Orders/>}></Route> 
+            <Route path="user/orderss" element={<Orders/>}></Route> 
             <Route path="user/profile" element={<Profile/>}></Route> 
             </Route>
               <Route path="/dashboard" element={<AdminRoute/>}>
@@ -59,7 +60,7 @@ function App() {
 
             <Route path="admin/product" element={<ProductPage/>}></Route>
             <Route path="admin/users" element={<UserDetails/>}></Route>    
-            <Route path="admin/orders" element={<Orders/>}></Route>            
+            <Route path="admin/orders" element={<OrdersAdmin/>}></Route>            
             </Route>          
             <Route path="/" element={<Home/>}></Route>
             <Route path="/about" element={<About/>}></Route>

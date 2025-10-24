@@ -2,6 +2,24 @@ import slugify from "slugify";
 import productModel from "../models/productModel.js";
 import fs from "fs";
 import categoryModel from '../models/categoryModel.js'
+import braintree from "braintree";
+import orderModel from "../models/orderModel.js";
+import dotenv from "dotenv";
+
+
+dotenv.config();
+
+
+
+
+
+// Braintree Gateway
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox, 
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+});
 
   export const createProductController = async (req, res) => {
  try {
@@ -339,5 +357,67 @@ export const productCategoryController = async (req, res) => {
       error,
       message: "Error While Getting products",
     });
+  }
+};
+
+// 1Get Braintree Token
+export const braintreeTokenController = async (req, res) => {
+  try {
+    gateway.clientToken.generate({}, (err, response) => {
+      if (err) {
+        console.error("Braintree Token Error:", err);
+        return res.status(500).json({ success: false, error: err });
+      }
+      res.json({ clientToken: response.clientToken });
+    });
+  } catch (error) {
+    console.error("Braintree Token Error:", error);
+    res.status(500).json({ success: false, error });
+  }
+};
+
+// Handle Payment
+export const brainTreePaymentController = async (req, res) => {
+  try {
+    const { nonce, cart } = req.body;
+
+    if (!nonce || !cart?.length) {
+      return res.status(400).json({ success: false, error: "Invalid payment request" });
+    }
+
+    // Calculate total amount
+    const totalAmount = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+
+    // Create transaction
+    gateway.transaction.sale(
+      {
+        amount: totalAmount,
+        paymentMethodNonce: nonce,
+        options: { submitForSettlement: true },
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Braintree Payment Error:", error);
+          return res.status(500).json({ success: false, error });
+        }
+
+        if (result.success) {
+          // Save order in DB
+          const order = new orderModel({
+            products: cart,
+            payment: result,
+            buyer: req.user._id, // make sure requireSignIn middleware is used
+          });
+          await order.save();
+
+          return res.json({ success: true, order });
+        } else {
+          return res.status(500).json({ success: false, error: result.message });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Braintree Payment Error:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
