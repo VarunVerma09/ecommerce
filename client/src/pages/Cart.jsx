@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import dropin from "braintree-web-drop-in";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
-import DropIn from "braintree-web-drop-in-react";
-import axios from "axios";
-import { toast } from "react-hot-toast";
 
 const Cart = () => {
   const { auth } = useAuth();
@@ -14,76 +14,101 @@ const Cart = () => {
   const [instance, setInstance] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dropinRef = useRef(null);
 
   const user = auth?.user;
   const token = auth?.token;
 
-  // Calculate total price
+  // ✅ Get Braintree Token
+  const getToken = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:8080/api/v1/product/braintree/token"
+      );
+      setClientToken(data?.clientToken);
+    } catch (err) {
+      console.error("Token fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+  }, [auth?.token]);
+
+  // ✅ Initialize DropIn
+  useEffect(() => {
+    if (clientToken) {
+      dropin.create(
+        {
+          authorization: clientToken,
+          container: dropinRef.current,
+          // ❌ Remove PayPal to avoid sandbox linking issue
+          // paypal: { flow: "vault" },
+        },
+        (error, dropinInstance) => {
+          if (error) {
+            console.error("DropIn create error:", error);
+          } else {
+            setInstance(dropinInstance);
+            console.log("✅ DropIn instance created:", dropinInstance);
+          }
+        }
+      );
+    }
+  }, [clientToken]);
+
+  // ✅ Handle Payment
+  const handlePayment = async () => {
+    if (!instance) return toast.error("Payment gateway not ready");
+    if (!user?.address) return toast.error("Please add your address first");
+
+    try {
+      setLoading(true);
+      const { nonce } = await instance.requestPaymentMethod();
+
+      const { data } = await axios.post(
+        "http://localhost:8080/api/v1/product/braintree/payment",
+        { nonce, cart },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (data?.success) {
+        toast.success("Payment successful!");
+        setCart([]);
+        localStorage.removeItem("cart");
+        navigate("/dashboard/user/orders");
+      } else {
+        toast.error(data?.message || "Payment failed");
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("Payment failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Calculate total price
   const totalPrice = () => {
     try {
       const total = cart.reduce((acc, item) => acc + Number(item.price), 0);
-      return total.toLocaleString("en-US", { style: "currency", currency: "USD" });
+      return total.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
     } catch (error) {
       console.error("Total price calculation error:", error);
       return "$0.00";
     }
   };
 
-  // Remove item from cart
+  // ✅ Remove item from cart
   const removeCartItem = (pid) => {
     const updatedCart = cart.filter((item) => item._id !== pid);
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     toast.success("Item removed from cart");
   };
-
-  // Get Braintree client token
-  const getToken = async () => {
-    
-      const { data } = await axios.get(
-        "http://localhost:8080/api/v1/product/braintree/token"
-      );
-      setClientToken(data.clientToken)
-     
-  };
-
-  useEffect(() => {
-     getToken();
-  }, [auth?.token]);
-
-  // Handle payment
-const handlePayment = async () => {
-  if (!instance) return alert("Payment gateway not ready");
-  if (!user?.address) return toast.error("Please add your address first");
-
-  try {
-    setLoading(true);
-
-    const paymentMethod = await instance.requestPaymentMethod();
-    const nonce = paymentMethod.nonce;
-
-    const { data } = await axios.post(
-      "http://localhost:8080/api/v1/product/braintree/payment",
-      { nonce, cart },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    if (data?.success) {
-      toast.success("Payment completed successfully!");
-      setCart([]);
-      localStorage.removeItem("cart");
-      navigate("/dashboard/user/orders");
-    } else {
-      toast.error(data?.message || "Payment failed. Try again.");
-    }
-  } catch (error) {
-    console.error("Payment error:", error);
-    toast.error(error?.response?.data?.message || "Payment failed. Try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
 
   return (
     <Layout>
@@ -179,23 +204,14 @@ const handlePayment = async () => {
               )}
 
               {/* Payment Section */}
-              {clientToken && token &&(
-                <div className="mt-3">
-                  <DropIn
-                    options={{
-                      authorization: clientToken,
-                      paypal: { flow: "vault" },
-                    }}
-                    onInstance={(inst) => {
-                      console.log("DropIn instance ready:", inst);
-                      setInstance(inst);
-                    }}
-                  />
-                  {/* Button enabled when DropIn instance is ready */}
+              {clientToken && (
+                <div key={clientToken}>
+                  <div ref={dropinRef} className="mt-3"></div>
+
                   <button
-                    className="btn btn-primary w-100"
+                    className="btn btn-primary mt-3"
                     onClick={handlePayment}
-                   
+                    disabled={loading || !instance}
                   >
                     {loading ? "Processing..." : "Make Payment"}
                   </button>

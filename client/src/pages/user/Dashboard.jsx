@@ -1,6 +1,6 @@
 import React from 'react'
-import Layout from '../../components/layout/Layout'
-import UserMenu from '../../components/layout/UserMenu'
+import UserMenu from '../../components/Layout/UserMenu'
+import Layout from '../../components/Layout/Layout'
 
 
 function Dashboard() {

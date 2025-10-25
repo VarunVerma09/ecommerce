@@ -360,33 +360,39 @@ export const productCategoryController = async (req, res) => {
   }
 };
 
-// 1Get Braintree Token
+// Get Braintree Token
 export const braintreeTokenController = async (req, res) => {
   try {
-    gateway.clientToken.generate({}, (err, response) => {
+    gateway.clientToken.generate({}, function (err, response) {
       if (err) {
-        console.error("Braintree Token Error:", err);
-        return res.status(500).json({ success: false, error: err });
+        res.status(500).send(err);
+      } else {
+        res.status(200).send({
+          success: true,
+          clientToken: response.clientToken,
+        });
       }
-      res.json({ clientToken: response.clientToken });
     });
   } catch (error) {
-    console.error("Braintree Token Error:", error);
-    res.status(500).json({ success: false, error });
+    console.error("Token Error:", error);
   }
 };
+
 
 // Handle Payment
 export const brainTreePaymentController = async (req, res) => {
   try {
-    const { nonce, cart } = req.body;
+    const {  cart, nonce} = req.body;
 
-    if (!nonce || !cart?.length) {
-      return res.status(400).json({ success: false, error: "Invalid payment request" });
-    }
+   
 
     // Calculate total amount
-    const totalAmount = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+    let totalAmount = 0;
+     cart.map((i)=> 
+      {totalAmount += i.price
+
+      });
+ 
 
     // Create transaction
     gateway.transaction.sale(
@@ -395,7 +401,7 @@ export const brainTreePaymentController = async (req, res) => {
         paymentMethodNonce: nonce,
         options: { submitForSettlement: true },
       },
-      async (error, result) => {
+      function (error, result)  {
         if (error) {
           console.error("Braintree Payment Error:", error);
           return res.status(500).json({ success: false, error });
@@ -406,18 +412,16 @@ export const brainTreePaymentController = async (req, res) => {
           const order = new orderModel({
             products: cart,
             payment: result,
-            buyer: req.user._id, // make sure requireSignIn middleware is used
-          });
-          await order.save();
-
-          return res.json({ success: true, order });
+            buyer: req.user._id, 
+          }).save();
+           res.json({ ok: true});
         } else {
-          return res.status(500).json({ success: false, error: result.message });
+           res.status(500).send(error);
         }
       }
     );
   } catch (error) {
-    console.error("Braintree Payment Error:", error);
-    res.status(500).json({ success: false, error: error.message });
+    console.log(error);
+    
   }
 };
