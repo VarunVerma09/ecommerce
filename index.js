@@ -31,7 +31,7 @@ app.use("/api/v1/category", categoryRoute);
 app.use("/api/v1/product", productRoute);
 
 // ✅ Handle SPA routes
-app.get("/:path(*)", (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
