@@ -1,6 +1,6 @@
 import React from 'react'
-import UserMenu from '../../components/Layout/UserMenu'
-import Layout from '../../components/Layout/Layout'
+import UserMenu from "../../components/layout/Layout"
+import Layout from '../../components/layout/Layout'
 
 
 function Dashboard() {
@@ -10,7 +10,7 @@ function Dashboard() {
         <div className="row">
             
             <div className="col-md-2">
-                <UserMenu/>
+               <UserMenu/>
             </div>
             <div className="col-md-10">slkjhhkl</div>
 
